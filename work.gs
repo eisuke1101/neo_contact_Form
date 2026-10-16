@@ -31,7 +31,7 @@ function submit(payload) {
     const bodyHtml = buildPreviewHtml_(req);
     const htmlName = `detail-${Date.now()}.html`;
     const htmlFile = folderHtml.createFile(htmlName, bodyHtml, MimeType.HTML);
-    const previewUrl = `${BASE_WEBAPP_URL}?mode=preview&id=${htmlFile.getId()}`;
+    const previewUrl = `${webAppUrl_()}?mode=preview&id=${htmlFile.getId()}`;
 
     // --- 期日（YYYY/MM/DD）整形 ---
     const dueDateStr = normalizeDateYmd_(req.dueDate); // 空なら空文字
@@ -79,6 +79,7 @@ function submit(payload) {
       type: 'work',
       rowIndex,
       htmlFileId: htmlFile.getId(),
+      previewUrl,
       fileIds: savedFileIds,
       fields: {
         email: req.email,
@@ -109,6 +110,7 @@ function submit(payload) {
 /** 後段処理（作業依頼）：公開化・添付URL反映・控えメール */
 function runWorkJob_(job) {
   const { rowIndex, htmlFileId, fileIds, fields } = job;
+  const previewUrl = job.previewUrl || `${webAppUrl_()}?mode=preview&id=${htmlFileId}`;
   const ws = getSheet_(SPREADSHEET_ID, SHEET_NAME);
 
   makeFilesPublic_([htmlFileId].concat(fileIds || []));
@@ -138,7 +140,7 @@ function runWorkJob_(job) {
 ◆ 対応希望期日: ${fields.dueDate}
 ◆ 補足: ${fields.dueDateNote}
 
-◆ プレビュー: ${BASE_WEBAPP_URL}?mode=preview&id=${htmlFileId}
+◆ プレビュー: ${previewUrl}
 
 何卒よろしくお願いいたします。
 

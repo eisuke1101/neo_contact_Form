@@ -26,7 +26,6 @@ const BUG_PRIORITIES = [
 
 function submitBug(payload) {
   try {
-    if (!FORMS_ENABLED.bug) throw new Error('この受付は現在準備中です。');
     if (!payload) throw new Error('no payload');
     const req = payload.fields || {};
     const v = k => String(req[k] || '').trim();

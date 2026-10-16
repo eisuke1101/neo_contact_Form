@@ -1,8 +1,8 @@
 <!-- ===== 作業依頼（既存フォーム） ===== -->
   <div class="tab-lead">
     <b>作業依頼</b>：ポイント修正、予約・カルテ内容の変更、お知らせ掲載、データ抽出・登録など、システム課への<b>作業</b>のご依頼はこちら。<br>
-    <span class="if-dev-open if-bug-open">システムのエラーや動作の異常は <button type="button" class="link-btn" data-goto-tab="bug">不具合報告</button>、
-    機能追加や画面・文言の変更は <button type="button" class="link-btn" data-goto-tab="dev">新規開発・仕様変更</button> からお願いします。</span>
+    システムのエラーや動作の異常は <button type="button" class="link-btn" data-goto-tab="bug">不具合報告</button>、
+    機能追加や画面・文言の変更は <button type="button" class="link-btn" data-goto-tab="dev">新規開発・仕様変更</button> からお願いします。
   </div>
 
   <div class="pairs">
@@ -78,7 +78,7 @@
       </select>
 
       <div class="info-block"><b>
-        <pre><span class="if-dev-open">※新機能開発、仕様変更のご依頼はこちらでは承れません。<button type="button" class="link-btn" data-goto-tab="dev">「新規開発・仕様変更」タブ</button>からご依頼ください。</span><span class="if-dev-closed">※新機能開発、仕様変更のご依頼はこちらで承ることはできませんので、<a href="https://www.chatwork.com/#!rid375263192" target="_blank" rel="noopener">Chatworkグループ</a>にてご依頼、ご相談ください。</span>
+        <pre>※新機能開発、仕様変更のご依頼はこちらでは承れません。<button type="button" class="link-btn" data-goto-tab="dev">「新規開発・仕様変更」タブ</button>からご依頼ください。
   ＜開発、仕様変更案件の例＞
    ・体験レッスン、資料請求ページの文言変更(表示内容、入力項目の追加や変更、年末年始、GW、夏期休業の文言変更)
    ・MyRoom、うさぎclubへの各種バナー・ポップアップ表示/取下
@@ -195,9 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       // 2. 「その他」選択時
       else if (val.startsWith('その他')) {
-        showCustomModal(NEO.FORMS_ENABLED.dev
-          ? '各機能の仕様変更（画面文言の変更、操作性の変更など）、<br>また機能追加はこの「作業依頼」では承りません。<br>改修についての事前相談の場合も含め、<button type="button" class="link-btn" data-goto-tab="dev">「新規開発・仕様変更」タブ</button>からご依頼ください。'
-          : '各機能の仕様変更（画面文言の変更、操作性の変更など）、<br>また機能追加はこのフォームでは承りません。<br>改修についての事前相談の場合も含め、Chatworkにてご連絡ください。');
+        showCustomModal('各機能の仕様変更（画面文言の変更、操作性の変更など）、<br>また機能追加はこの「作業依頼」では承りません。<br>改修についての事前相談の場合も含め、<button type="button" class="link-btn" data-goto-tab="dev">「新規開発・仕様変更」タブ</button>からご依頼ください。');
       }
 
       const topicOtherWrap = document.getElementById('topicOtherWrap');

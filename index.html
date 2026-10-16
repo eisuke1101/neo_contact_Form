@@ -101,11 +101,6 @@
   .choice-list label{ display:flex; gap:8px; align-items:flex-start; font-size:13px; cursor:pointer; }
   .choice-list input{ margin-top:2px; }
   .choice-list .choice-note{ display:block; font-size:12px; color:#666; }
-  body.dev-closed .if-dev-open, body:not(.dev-closed) .if-dev-closed{ display:none; }
-  body.bug-closed .if-bug-open{ display:none; }
-  .preparing-notice{ background:#fff4e5; border:1px solid #f5b971; color:#7a4100; border-radius:8px; padding:12px 14px; margin:0 0 14px; font-size:14px; line-height:1.6; }
-  .tab-badge{ display:inline-block; margin-top:3px; font-size:11px; font-weight:700; background:#fff4e5; color:#7a4100; border:1px solid #f5b971; border-radius:10px; padding:0 8px; }
-  .submit-btn:disabled{ background:#bdbdbd; color:#fff; opacity:1; }
   .warn-note{ font-size:12px; color:#b3261e; margin-top:4px; }
   .file-list{ margin-top:4px; }
 
@@ -171,7 +166,6 @@
 /* ===== 全フォーム共通の部品（各フォームのスクリプトより先に読み込む） ===== */
 window.NEO = (function(){
   const PREFILL = <?!= jsonForScript_(params) ?>;
-  const FORMS_ENABLED = <?!= jsonForScript_(FORMS_ENABLED) ?>;
   const MAX_FILE_BYTES = 15 * 1024 * 1024;
 
   const $ = (id) => document.getElementById(id);
@@ -277,24 +271,6 @@ window.NEO = (function(){
         window.scrollTo(0, 0);
       }
     });
-    // 準備中のタブ：お知らせを表示し、送信ボタンを無効化（body に xxx-closed クラスを付与）
-    Object.keys(FORMS_ENABLED).forEach(type => document.body.classList.toggle(type + '-closed', !FORMS_ENABLED[type]));
-    Object.keys(FORMS_ENABLED).filter(type => !FORMS_ENABLED[type]).forEach(type => {
-      const panel = $('panel-' + type);
-      const tab = document.querySelector(`.tab[data-type="${type}"]`);
-      if (!panel) return;
-      const notice = document.createElement('div');
-      notice.className = 'preparing-notice';
-      notice.innerHTML = '<b>このフォームは現在準備中です。</b>受付開始まで今しばらくお待ちください。<br>'
-        + 'お急ぎの場合は、<button type="button" class="link-btn" data-goto-tab="work">作業依頼</button> フォームまたは Chatwork グループよりご連絡ください。';
-      panel.insertBefore(notice, panel.firstChild);
-      panel.querySelectorAll('.submit-btn').forEach(btn => {
-        btn.disabled = true;
-        btn.textContent = '準備中のため送信できません';
-      });
-      if (tab) tab.insertAdjacentHTML('beforeend', '<span class="tab-badge">準備中</span>');
-    });
-
     selectTab(String(PREFILL.type || 'work'));
 
     // 氏名・メールアドレスはタブ間で同期（data-sync が同じ欄へコピー）
@@ -307,7 +283,7 @@ window.NEO = (function(){
     });
   });
 
-  return { PREFILL, FORMS_ENABLED, showModal, readAsDataURL, makeFlash, bindFilePicker, callServer, selectTab };
+  return { PREFILL, showModal, readAsDataURL, makeFlash, bindFilePicker, callServer, selectTab };
 })();
 </script>
 </head>
@@ -324,7 +300,6 @@ window.NEO = (function(){
   <div class="desc">
     <b>
     ■サポート時間は平日10:00～22:00、土日祝9:30～18:30です。時間外でも対応が必要な場合、お急ぎの案件などの場合はその旨ご連絡ください。<br>
-    <span class="if-dev-closed">■新機能開発、仕様変更のご依頼はChatworkグループにてご依頼、ご相談ください。⇒ <a href="https://www.chatwork.com/#!rid375263192" target="_blank" rel="noopener">Chatworkグループ</a><br></span>
     ■パソコン不具合に関するお問い合わせは、PC不具合フォームよりお願い致します。⇒ <a href="https://docs.google.com/forms/d/e/1FAIpQLSfj8-RN-yzCZ3NfWHkCkDVx-Xioe5OmIWp0XEGgbyENlnOsPg/viewform" target="_blank" rel="noopener">PC不具合フォーム</a><br>
     ■マテリアルに関するお問い合わせは、テクニカルサポート 050-5577-2984 へご連絡ください。<br>
     </b>

@@ -1,13 +1,6 @@
 /***** 設定ここから *****/
-// ★ Web アプリの公開 URL（/exec）
-const BASE_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzEM_VxYEF_MkX8vtIAsZzc_YgD8m9_1risQIF9nZKh-oqbrjkW46RBNBZrulVQQZZT/exec';
-
-// ---- 受付の公開状態（false のタブは「準備中」表示・送信不可） ----
-const FORMS_ENABLED = {
-  work: true,   // 作業依頼
-  bug:  false,  // 不具合報告（準備中）
-  dev:  false   // 新規開発・仕様変更（準備中）
-};
+// Web アプリの公開 URL（/exec）。空欄ならこのプロジェクトのデプロイ URL を自動で使う
+const BASE_WEBAPP_URL = '';
 
 // ---- 作業依頼（既存フォーム） ----
 const SPREADSHEET_ID = '1oyVI671g6kZHmJRAqawLHS7EXqfKM_3wrfR-GwYZy8U';
@@ -94,6 +87,11 @@ function doGet(e) {
     .setTitle('NEO 問い合わせ・依頼フォーム')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+/** 本文プレビュー等のリンクに使う Web アプリ URL */
+function webAppUrl_() {
+  return BASE_WEBAPP_URL || ScriptApp.getService().getUrl();
 }
 
 /** テンプレートから部品 HTML を読み込む */
