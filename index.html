@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<title>NEO 問い合わせ・依頼フォーム</title>
+<style>
+  header.page-header {
+    background: #f0f6ff;
+    border-bottom: 3px solid #1a73e8;
+    padding: 16px 20px;
+    margin: -24px -24px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  header.page-header h1 {
+    font-size: 28px;
+    margin: 0;
+    color: #1a237e;
+    font-weight: 700;
+  }
+  .manual-link {
+    display: inline-block;
+    font-weight: 700;
+    text-decoration: none;
+    background: #1a73e8;
+    color: #fff;
+    border-radius: 8px;
+    padding: 8px 12px;
+    border: 1px solid #1669c1;
+    white-space: nowrap;
+  }
+  .manual-link:hover { background: #1669c1; }
+  .manual-link:focus { outline: 3px solid #90caf9; outline-offset: 2px; }
+
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 24px; line-height: 1.35; background:#fff; }
+  h1 { font-size: 22px; margin-bottom: 8px; }
+  .desc { color:#555; margin-bottom: 16px; }
+  .help { font-size: 12px; color:#666; }
+  .req::after { content:" *"; color:#d93025; }
+
+  :root{ --label-w:160px; --note-w:120px; --gap-x:12px; }
+  .form-row{ display:grid; grid-template-columns: var(--label-w) 1fr var(--note-w); align-items:center; gap:6px var(--gap-x); max-width:1100px; margin:6px 0; }
+  .form-row > label{ font-weight:700; margin:0; }
+  .form-row .side-note{ font-size:12px; color:#666; white-space:nowrap; }
+  .form-row input[type="text"], .form-row input[type="email"]{ width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-size:13px; box-sizing:border-box; }
+
+  .form-row2{ display:grid; grid-template-columns: var(--label-w) 1fr; align-items:start; gap:6px var(--gap-x); max-width:1100px; margin:6px 0; }
+  .form-row2 > label, .form-row2 > .label{ font-weight:700; margin-top:6px; }
+  .form-row2 .fieldwrap{ width:100%; }
+  .form-row2 input[type="text"], .form-row2 input[type="email"], .form-row2 input[type="url"], .form-row2 input[type="date"], .form-row2 select, .form-row2 textarea{ width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-size:13px; box-sizing:border-box; font-family:inherit; }
+  .form-row2 textarea{ min-height:200px; }
+  .form-row2 textarea.short{ min-height:110px; }
+  .form-row2 textarea.links{ min-height:56px; }
+
+  .pairs{ display:grid; grid-auto-rows:minmax(0,auto); row-gap:12px; max-width:1100px; margin:6px 0 10px; }
+  .pair{ display:grid; grid-template-columns: 1fr 1fr; column-gap:28px; }
+  .pair > .left .form-row, .pair > .right .form-row{ margin:0; }
+
+  .form-row.tight-note{ grid-template-columns: var(--label-w) auto auto; }
+  .form-row.tight-note .side-note{ margin-left:8px; }
+
+  .w-id{ width:8ch !important; }
+  .w-date{ width:14ch !important; }
+
+  .fieldwrap.flex{ display:flex; gap:10px; align-items:center; }
+  .flex-1{ flex:1; }
+
+  .actions{ display:flex; gap:8px; align-items:center; margin-top:10px; }
+  button{ padding:8px 14px; border:none; border-radius:8px; background:#1a73e8; color:#fff; font-weight:600; cursor:pointer; }
+  #submitBtn, .submit-btn { min-width: 24em; }
+  button:disabled{ opacity:.6; cursor:not-allowed; }
+  .status{ font-size:14px; }
+  .ok{ color:#0b8043; } .err{ color:#d93025; }
+
+  #submitBtn[aria-busy="true"], .submit-btn[aria-busy="true"] { opacity: 0.6; cursor: progress; position: relative; }
+  #submitBtn[aria-busy="true"]::after, .submit-btn[aria-busy="true"]::after { content: "⏳"; position: absolute; right: -1.8em; font-size: 14px; }
+
+  /* 簡易リッチエディタ */
+  .rte-toolbar{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:6px; }
+  .rte-toolbar button{ background:#f1f3f4; color:#222; border:1px solid #dadce0; padding:6px 8px; border-radius:6px; }
+  .rte-area{ border:1px solid #ccc; border-radius:8px; min-height:220px; padding:10px; background:#fff; }
+  .rte-area:focus{ outline: 2px solid #1a73e8; outline-offset: 2px; }
+
+  /* ===== タブ ===== */
+  .tabs{ display:flex; gap:6px; max-width:1100px; border-bottom:2px solid #1a73e8; margin:0 0 0; flex-wrap:wrap; }
+  .tab{ background:#f1f3f4; color:#333; border:1px solid #dadce0; border-bottom:none; border-radius:8px 8px 0 0; padding:10px 18px; font-size:15px; font-weight:700; }
+  .tab:hover{ background:#e8f0fe; }
+  .tab[aria-selected="true"]{ background:#1a73e8; color:#fff; border-color:#1a73e8; }
+  .tab .tab-sub{ display:block; font-size:11px; font-weight:400; opacity:.85; margin-top:2px; }
+  .tab-panel{ max-width:1100px; padding:14px 0 4px; }
+  .tab-panel[hidden]{ display:none; }
+  .tab-lead{ background:#f8fafd; border:1px solid #d2e3fc; border-radius:8px; padding:10px 14px; margin:0 0 14px; font-size:13px; color:#333; line-height:1.6; }
+  .tab-lead b{ color:#1a237e; }
+  .link-btn{ background:none; color:#1a73e8; padding:0; border:none; font-weight:700; text-decoration:underline; cursor:pointer; font-size:inherit; font-family:inherit; }
+
+  /* ===== 開発依頼／不具合報告 ===== */
+  .choice-list{ display:flex; flex-direction:column; gap:6px; padding-top:6px; }
+  .choice-list label{ display:flex; gap:8px; align-items:flex-start; font-size:13px; cursor:pointer; }
+  .choice-list input{ margin-top:2px; }
+  .choice-list .choice-note{ display:block; font-size:12px; color:#666; }
+  body.dev-closed .if-dev-open, body:not(.dev-closed) .if-dev-closed{ display:none; }
+  body.bug-closed .if-bug-open{ display:none; }
+  .preparing-notice{ background:#fff4e5; border:1px solid #f5b971; color:#7a4100; border-radius:8px; padding:12px 14px; margin:0 0 14px; font-size:14px; line-height:1.6; }
+  .tab-badge{ display:inline-block; margin-top:3px; font-size:11px; font-weight:700; background:#fff4e5; color:#7a4100; border:1px solid #f5b971; border-radius:10px; padding:0 8px; }
+  .submit-btn:disabled{ background:#bdbdbd; color:#fff; opacity:1; }
+  .warn-note{ font-size:12px; color:#b3261e; margin-top:4px; }
+  .file-list{ margin-top:4px; }
+
+  @media (max-width: 900px){
+    .pair{ grid-template-columns:minmax(0,1fr); row-gap:10px; }
+  }
+  @media (max-width: 760px){
+    body{ margin:16px; }
+    header.page-header{ margin:-16px -16px 16px; }
+    .form-row, .form-row.tight-note{ grid-template-columns:minmax(0,1fr); }
+    .form-row2{ grid-template-columns:minmax(0,1fr); }
+    .manual-link { font-size: 14px; padding: 6px 10px; }
+    #submitBtn, .submit-btn { min-width: 0; width:100%; }
+    .tab{ flex:1; padding:8px 10px; font-size:14px; }
+    .tab .tab-sub{ display:none; }
+    .info-block pre{ white-space:pre-wrap; }
+  }
+
+  /* カスタムモーダル */
+  .custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+  .custom-modal-box {
+    background: #fff;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 460px;
+    padding: 20px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+  .custom-modal-header {
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 12px;
+    color: #d93025;
+  }
+  .custom-modal-header.success { color: #0b8043; }
+  .custom-modal-body {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  .custom-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .custom-modal-actions button {
+    min-width: 80px;
+  }
+</style>
+
+<script>
+/* ===== 全フォーム共通の部品（各フォームのスクリプトより先に読み込む） ===== */
+window.NEO = (function(){
+  const PREFILL = <?!= jsonForScript_(params) ?>;
+  const FORMS_ENABLED = <?!= jsonForScript_(FORMS_ENABLED) ?>;
+  const MAX_FILE_BYTES = 15 * 1024 * 1024;
+
+  const $ = (id) => document.getElementById(id);
+
+  // モーダル（ok=true で「完了」表示）
+  function showModal(htmlContent, title, ok) {
+    const modal = $('customAlertModal'), header = $('customAlertHeader'), body = $('customAlertBody');
+    if (!modal || !body) return;
+    header.textContent = title || 'ご確認ください';
+    header.classList.toggle('success', !!ok);
+    body.innerHTML = htmlContent;
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+    const btn = $('customAlertOkBtn'); if (btn) btn.focus();
+  }
+
+  function readAsDataURL(file){
+    return new Promise((resolve,reject)=>{
+      const r=new FileReader();
+      r.onload=()=>resolve(r.result);
+      r.onerror=reject;
+      r.readAsDataURL(file);
+    });
+  }
+
+  function makeFlash(statusEl) {
+    return (text, cls) => {
+      statusEl.textContent = text;
+      statusEl.className = 'status ' + (cls||'');
+      if (text) setTimeout(()=>{ statusEl.textContent=''; statusEl.className='status'; }, 5000);
+    };
+  }
+
+  /** ファイル選択欄（画像可・1ファイル15MBまで）。選択済みファイルは store 配列に入る */
+  function bindFilePicker(input, listEl, store, flash) {
+    input.addEventListener('change', async () => {
+      store.length = 0; listEl.textContent = '';
+      const files = Array.from(input.files || []);
+      const tooBig = files.filter(f => f.size > MAX_FILE_BYTES);
+      if (tooBig.length) {
+        input.value = '';
+        flash('15MBを超えるファイルがあります（' + tooBig.map(f => f.name).join(', ') + '）。Google Driveなどに置き、下の欄にリンクを記入してください。', 'err');
+        return;
+      }
+      try {
+        for (const f of files) {
+          store.push({ name: f.name, dataUrl: await readAsDataURL(f), size: f.size, mime: f.type });
+        }
+        listEl.textContent = files.map(f => `${f.name} (${Math.round(f.size/1024)}KB)`).join(' / ');
+      } catch (e) {
+        store.length = 0; input.value = '';
+        flash('ファイル読込に失敗しました。', 'err');
+      }
+    });
+  }
+
+  /** google.script.run の呼び出し（送信ボタンの状態管理込み） */
+  function callServer(fnName, payload, btn, flash, onOk) {
+    btn.disabled = true;
+    btn.setAttribute('aria-busy', 'true');
+    flash('送信中…');
+    const done = () => { btn.disabled = false; btn.removeAttribute('aria-busy'); };
+    google.script.run
+      .withSuccessHandler(res => {
+        done();
+        if (res && res.ok) { flash(''); onOk(res); }
+        else flash('エラー: ' + (res && res.error || 'unknown'), 'err');
+      })
+      .withFailureHandler(err => {
+        done();
+        flash('エラー: ' + (err && (err.message||err.toString()) || 'unknown'), 'err');
+      })[fnName](payload);
+  }
+
+  function selectTab(type) {
+    const tabs = document.querySelectorAll('.tab');
+    if (![...tabs].some(t => t.dataset.type === type)) type = 'work';
+    tabs.forEach(t => {
+      const on = t.dataset.type === type;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      $('panel-' + t.dataset.type).hidden = !on;
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // モーダルの OK
+    const okBtn = $('customAlertOkBtn'), modal = $('customAlertModal');
+    okBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+    });
+
+    // タブ切り替え
+    document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => selectTab(t.dataset.type)));
+    document.addEventListener('click', (e) => {
+      const go = e.target.closest('[data-goto-tab]');
+      if (go) {
+        e.preventDefault();
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+        selectTab(go.dataset.gotoTab);
+        window.scrollTo(0, 0);
+      }
+    });
+    // 準備中のタブ：お知らせを表示し、送信ボタンを無効化（body に xxx-closed クラスを付与）
+    Object.keys(FORMS_ENABLED).forEach(type => document.body.classList.toggle(type + '-closed', !FORMS_ENABLED[type]));
+    Object.keys(FORMS_ENABLED).filter(type => !FORMS_ENABLED[type]).forEach(type => {
+      const panel = $('panel-' + type);
+      const tab = document.querySelector(`.tab[data-type="${type}"]`);
+      if (!panel) return;
+      const notice = document.createElement('div');
+      notice.className = 'preparing-notice';
+      notice.innerHTML = '<b>このフォームは現在準備中です。</b>受付開始まで今しばらくお待ちください。<br>'
+        + 'お急ぎの場合は、<button type="button" class="link-btn" data-goto-tab="work">作業依頼</button> フォームまたは Chatwork グループよりご連絡ください。';
+      panel.insertBefore(notice, panel.firstChild);
+      panel.querySelectorAll('.submit-btn').forEach(btn => {
+        btn.disabled = true;
+        btn.textContent = '準備中のため送信できません';
+      });
+      if (tab) tab.insertAdjacentHTML('beforeend', '<span class="tab-badge">準備中</span>');
+    });
+
+    selectTab(String(PREFILL.type || 'work'));
+
+    // 氏名・メールアドレスはタブ間で同期（data-sync が同じ欄へコピー）
+    document.querySelectorAll('[data-sync]').forEach(el => {
+      el.addEventListener('input', () => {
+        document.querySelectorAll(`[data-sync="${el.dataset.sync}"]`).forEach(o => {
+          if (o !== el) o.value = el.value;
+        });
+      });
+    });
+  });
+
+  return { PREFILL, FORMS_ENABLED, showModal, readAsDataURL, makeFlash, bindFilePicker, callServer, selectTab };
+})();
+</script>
+</head>
+<body>
+  <header class="page-header">
+    <h1>NEO 問い合わせ・依頼フォーム</h1>
+    <a class="manual-link"
+       href="https://docs.google.com/document/d/1Hbz7wjvYx6gMYgW9pXaWLosgoImV8bvK/"
+       target="_blank" rel="noopener">
+      ご利用マニュアル
+    </a>
+  </header>
+
+  <div class="desc">
+    <b>
+    ■サポート時間は平日10:00～22:00、土日祝9:30～18:30です。時間外でも対応が必要な場合、お急ぎの案件などの場合はその旨ご連絡ください。<br>
+    <span class="if-dev-closed">■新機能開発、仕様変更のご依頼はChatworkグループにてご依頼、ご相談ください。⇒ <a href="https://www.chatwork.com/#!rid375263192" target="_blank" rel="noopener">Chatworkグループ</a><br></span>
+    ■パソコン不具合に関するお問い合わせは、PC不具合フォームよりお願い致します。⇒ <a href="https://docs.google.com/forms/d/e/1FAIpQLSfj8-RN-yzCZ3NfWHkCkDVx-Xioe5OmIWp0XEGgbyENlnOsPg/viewform" target="_blank" rel="noopener">PC不具合フォーム</a><br>
+    ■マテリアルに関するお問い合わせは、テクニカルサポート 050-5577-2984 へご連絡ください。<br>
+    </b>
+  </div>
+
+  <div class="tabs" role="tablist" aria-label="受付の種類">
+    <button type="button" class="tab" role="tab" data-type="work" aria-controls="panel-work">
+      作業依頼<span class="tab-sub">データの登録・修正・抽出など</span>
+    </button>
+    <button type="button" class="tab" role="tab" data-type="bug" aria-controls="panel-bug">
+      不具合報告<span class="tab-sub">エラー・動作や表示の異常</span>
+    </button>
+    <button type="button" class="tab" role="tab" data-type="dev" aria-controls="panel-dev">
+      新規開発・仕様変更<span class="tab-sub">機能追加・画面や文言の変更</span>
+    </button>
+  </div>
+
+  <section id="panel-work" class="tab-panel" role="tabpanel">
+    <?!= include('form_work') ?>
+  </section>
+
+  <section id="panel-bug" class="tab-panel" role="tabpanel" hidden>
+    <?!= include('form_bug') ?>
+  </section>
+
+  <section id="panel-dev" class="tab-panel" role="tabpanel" hidden>
+    <?!= include('form_dev') ?>
+  </section>
+
+  <!-- カスタム警告モーダル -->
+  <div id="customAlertModal" class="custom-modal-overlay" style="display:none;" aria-hidden="true">
+    <div class="custom-modal-box">
+      <div id="customAlertHeader" class="custom-modal-header">ご確認ください</div>
+      <div id="customAlertBody" class="custom-modal-body"></div>
+      <div class="custom-modal-actions">
+        <button type="button" id="customAlertOkBtn">OK</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

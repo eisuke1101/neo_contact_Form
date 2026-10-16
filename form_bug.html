@@ -1,0 +1,160 @@
+<!-- ===== 不具合報告 ===== -->
+  <div class="tab-lead">
+    <b>不具合報告</b>：エラーが出る、正しく動かない、表示がおかしいなど、システムの不具合のご報告はこちら。<br>
+    今ある機能の使い勝手の改善は「改善要望」として、こちらからご報告いただけます。新しい機能の追加や大きな変更は
+    <button type="button" class="link-btn" data-goto-tab="dev">新規開発・仕様変更</button> からお願いします。
+  </div>
+
+  <div class="form-row2">
+    <label class="req" for="bug_email">Email</label>
+    <div class="fieldwrap">
+      <input type="email" id="bug_email" data-sync="email" placeholder="your@example.com" required autocomplete="email">
+      <div class="help">受付の控えをこのアドレスへお送りします。</div>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <div class="label req" id="bug_category_label">カテゴリ</div>
+    <div class="fieldwrap">
+      <div class="choice-list" role="radiogroup" aria-labelledby="bug_category_label">
+        <label><input type="radio" name="bug_category" value="不具合 / Bug report">
+          <span>不具合<span class="choice-note">エラーが出る、正しく動かない、表示がおかしい など</span></span></label>
+        <label><input type="radio" name="bug_category" value="改善要望 / Change request">
+          <span>改善要望<span class="choice-note">不具合ではないが、今ある機能をこう改善してほしい</span></span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <div class="label req" id="bug_priority_label">深刻度・優先度</div>
+    <div class="fieldwrap">
+      <!-- value は管理シートの選択肢と完全一致させること（表示文言だけ本番運用向けに変更） -->
+      <div class="choice-list" role="radiogroup" aria-labelledby="bug_priority_label">
+        <label><input type="radio" name="bug_priority" value="P1: テストを進めることができない深刻な問題 / Critical">
+          <span>P1：業務が止まってしまう深刻な問題<span class="choice-note">回避方法がなく、業務を進められない</span></span></label>
+        <label><input type="radio" name="bug_priority" value="P2: 業務に支障がある問題（ロジック・入出力の間違いなど） / Important">
+          <span>P2：業務に支障がある問題<span class="choice-note">計算・処理結果や入出力の間違いなど</span></span></label>
+        <label><input type="radio" name="bug_priority" value="P3: 業務に支障がない問題（推測可能な誤字など） / Medium">
+          <span>P3：業務に支障がない問題<span class="choice-note">意味が推測できる誤字など</span></span></label>
+        <label><input type="radio" name="bug_priority" value="P4: 問題ではないが、あったらよい改善要望・アイデア / Low">
+          <span>P4：問題ではないが、あったらよい改善・アイデア</span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label for="bug_url">画面のURL</label>
+    <div class="fieldwrap">
+      <input type="text" id="bug_url" placeholder="https://…（問題が起きた画面のURL）" inputmode="url">
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label class="req" for="bug_steps">問題に至るまでの操作手順</label>
+    <div class="fieldwrap">
+      <textarea id="bug_steps" class="short" placeholder="例）&#10;1. 管理画面に本部アカウントでログイン&#10;2. 生徒検索で生徒コードを入力して検索&#10;3. 生徒詳細の「〇〇」ボタンを押す"></textarea>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label class="req" for="bug_actual">問題の動作<br>（症状や現状）</label>
+    <div class="fieldwrap">
+      <textarea id="bug_actual" class="short" placeholder="例）「〇〇が入力されていません。」というエラーが表示され、登録できない"></textarea>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label class="req" for="bug_expected">あるべき動作<br>（望ましい動作）</label>
+    <div class="fieldwrap">
+      <textarea id="bug_expected" class="short" placeholder="例）エラーが表示されず、正常に登録できること"></textarea>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label for="bug_files">スクリーンショット・録画など<br>※1ファイル最大15MB</label>
+    <div class="fieldwrap">
+      <input type="file" id="bug_files" multiple>
+      <div class="help">画像・動画・PDF など。</div>
+      <div id="bug_fileList" class="help file-list"></div>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label for="bug_links">15MBを超えるファイルのリンク</label>
+    <div class="fieldwrap">
+      <textarea id="bug_links" class="links" placeholder="録画などを Google Drive に置いた場合のURL（複数ある場合は改行で区切ってください）"></textarea>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label for="bug_username">アカウント名</label>
+    <div class="fieldwrap">
+      <input type="text" id="bug_username" placeholder="例）honbu（管理画面, 本部アカウント）／ 3250（管理画面, 金町テスト校）">
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label for="bug_password">パスワード</label>
+    <div class="fieldwrap">
+      <input type="text" id="bug_password" autocomplete="off">
+      <div class="warn-note">※ 入力内容は管理表にそのまま記録され、関係者が閲覧できます。テスト用アカウント以外のパスワードは入力しないでください。</div>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label></label>
+    <div class="fieldwrap">
+      <div class="actions">
+        <button id="bug_submitBtn" class="submit-btn" type="button">送信</button>
+        <span id="bug_status" class="status" aria-live="polite"></span>
+      </div>
+    </div>
+  </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const $ = (id) => document.getElementById(id);
+  const flash = NEO.makeFlash($('bug_status'));
+  const files = [];
+  const radio = (name) => (document.querySelector(`input[name="${name}"]:checked`) || {}).value || '';
+
+  NEO.bindFilePicker($('bug_files'), $('bug_fileList'), files, flash);
+
+  $('bug_submitBtn').addEventListener('click', () => {
+    const btn = $('bug_submitBtn');
+    if (btn.getAttribute('aria-busy') === 'true') return;
+
+    const fields = {
+      email: $('bug_email').value.trim(),
+      category: radio('bug_category'),
+      priority: radio('bug_priority'),
+      url: $('bug_url').value.trim(),
+      steps: $('bug_steps').value.trim(),
+      actual: $('bug_actual').value.trim(),
+      expected: $('bug_expected').value.trim(),
+      extraLinks: $('bug_links').value.trim(),
+      username: $('bug_username').value.trim(),
+      password: $('bug_password').value.trim()
+    };
+    if (!fields.email || !fields.category || !fields.priority || !fields.steps || !fields.actual || !fields.expected) {
+      flash('未入力の必須項目があります。', 'err');
+      return;
+    }
+    if (!$('bug_email').checkValidity()) {
+      flash('メールアドレスの形式が正しくありません。', 'err');
+      return;
+    }
+
+    NEO.callServer('submitBug', { fields, files }, btn, flash, (res) => {
+      NEO.showModal(
+        `受付番号 <b>${res.id}</b> で受け付けました。<br>控えメールを ${fields.email.replace(/</g,'&lt;')} へお送りします。`,
+        '送信しました', true);
+      ['bug_url','bug_steps','bug_actual','bug_expected','bug_links','bug_username','bug_password']
+        .forEach(id => { $(id).value = ''; });
+      document.querySelectorAll('input[name="bug_category"], input[name="bug_priority"]').forEach(r => { r.checked = false; });
+      $('bug_files').value = ''; $('bug_fileList').textContent = '';
+      files.length = 0;
+    });
+  });
+});
+</script>

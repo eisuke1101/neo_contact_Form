@@ -1,0 +1,365 @@
+<!-- ===== 作業依頼（既存フォーム） ===== -->
+  <div class="tab-lead">
+    <b>作業依頼</b>：ポイント修正、予約・カルテ内容の変更、お知らせ掲載、データ抽出・登録など、システム課への<b>作業</b>のご依頼はこちら。<br>
+    <span class="if-dev-open if-bug-open">システムのエラーや動作の異常は <button type="button" class="link-btn" data-goto-tab="bug">不具合報告</button>、
+    機能追加や画面・文言の変更は <button type="button" class="link-btn" data-goto-tab="dev">新規開発・仕様変更</button> からお願いします。</span>
+  </div>
+
+  <div class="pairs">
+    <div class="pair">
+      <div class="left">
+        <div class="form-row">
+          <label class="req" for="person">ご担当者様氏名</label>
+          <input type="text" id="person" data-sync="person" required>
+          <div class="side-note"></div>
+        </div>
+      </div>
+      <div class="right" aria-hidden="true">
+        <div class="form-row"><label>&nbsp;</label><div></div><div class="side-note"></div></div>
+      </div>
+    </div>
+
+    <div class="pair">
+      <div class="left">
+        <div class="form-row">
+          <label class="req" for="email">Email</label>
+          <input type="email" id="email" data-sync="email" placeholder="your@example.com" required autocomplete="email">
+          <div class="side-note"></div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="form-row">
+          <label for="phone">電話番号</label>
+          <input type="text" id="phone" placeholder="大阪オフィス内社員の場合は内線番号を記入">
+          <div class="side-note"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pair">
+      <div class="left">
+        <div class="form-row tight-note">
+          <label for="schoolDeptId">スクールコード</label>
+          <input type="text" id="schoolDeptId" class="w-id" pattern="\d{4}" maxlength="4" placeholder="例）0123" inputmode="numeric">
+          <div class="side-note">4桁の数字で記入してください</div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="form-row">
+          <label class="req" for="schoolDept">スクール・部署名</label>
+          <input type="text" id="schoolDept" required>
+          <div class="side-note"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label class="req" for="topic">問い合わせ、依頼区分</label>
+    <div class="fieldwrap">
+      <select id="topic" required>
+        <option value="" selected disabled>選択してください</option>
+        <option>ポイント修正・ポイント有効期限延長</option>
+        <option>付帯サービス（Livestation、KIDSチャンネル、NativeKIDSなど）</option>
+        <option>予約、カルテ内容（日時、講師、受講内容、利用ポイントなど）の変更</option>
+        <option>講師・スケジュール関連</option>
+        <option>口座振替</option>
+        <option>請求・入金関連</option>
+        <option>MyRoom・うさぎclubのInfomation（お知らせ）掲載</option>
+        <option>MyRoomのClub9開催情報更新</option>
+        <option>MyRoomの見逃し配信動画の更新</option>
+        <option>HP情報・NEO情報更新依頼</option>
+        <option>レベルアップコンテスト・スピーチコンテスト関連</option>
+        <option>イベント、季節講習関連</option>
+        <option>データ抽出</option>
+        <option>データ登録(商品マスタ等 ＊LS、KC,ZoomKidsスケジュールはchatworkグループへ)</option>
+        <option>レッスントラブル関連</option>
+        <option>その他</option>
+      </select>
+
+      <div class="info-block"><b>
+        <pre><span class="if-dev-open">※新機能開発、仕様変更のご依頼はこちらでは承れません。<button type="button" class="link-btn" data-goto-tab="dev">「新規開発・仕様変更」タブ</button>からご依頼ください。</span><span class="if-dev-closed">※新機能開発、仕様変更のご依頼はこちらで承ることはできませんので、<a href="https://www.chatwork.com/#!rid375263192" target="_blank" rel="noopener">Chatworkグループ</a>にてご依頼、ご相談ください。</span>
+  ＜開発、仕様変更案件の例＞
+   ・体験レッスン、資料請求ページの文言変更(表示内容、入力項目の追加や変更、年末年始、GW、夏期休業の文言変更)
+   ・MyRoom、うさぎclubへの各種バナー・ポップアップ表示/取下
+   ・MyRoom、うさぎclubの文言変更、各種PDF差し替え       など</pre></b>
+      </div>
+    </div>
+  </div>
+
+  <!-- ★ リッチテキスト入力欄（本文中に画像ペースト可） -->
+  <div class="form-row2">
+    <label class="req" for="detailHtml">問い合わせ、依頼内容（リッチテキスト形式）</label>
+    <div class="fieldwrap">
+      <div class="rte-toolbar" aria-label="書式">
+        <button type="button" data-cmd="bold"><b>B</b></button>
+        <button type="button" data-cmd="italic"><i>I</i></button>
+        <button type="button" data-cmd="underline"><u>U</u></button>
+        <button type="button" data-cmd="insertUnorderedList">• List</button>
+        <button type="button" data-cmd="insertOrderedList">1. List</button>
+        <button type="button" id="btn-insert-image">画像貼り付け</button>
+      </div>
+      <div id="detailHtml" class="rte-area" contenteditable="true" aria-multiline="true"
+           placeholder="本文・画像をここに入力／ペーストしてください。"></div>
+      <textarea id="detail" style="display:none;"></textarea>
+      <input id="imagePicker" type="file" accept="image/*" style="display:none;">
+      <div class="help">※ 画像は本文中に直接ペーストできます（Ctrl+V / ⌘+V）。</div>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label for="otherFiles">添付ファイル<br>※最大15MB</label>
+    <div class="fieldwrap">
+      <input type="file" id="otherFiles" multiple>
+      <div class="help">PDF・Word・Excel等。  画像は上の本文欄へ直接貼り付け可能です。</div>
+      <div id="fileList" class="help"></div>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label for="dueDate">対応希望期日</label>
+    <div class="fieldwrap flex">
+      <input type="date" id="dueDate" class="w-date">
+      <input type="text" id="dueDateNote" class="flex-1" placeholder="対応希望期日の補足  ※順次対応のためご希望に添えない場合がございます。お急ぎの場合はその旨ご連絡ください。">
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label></label>
+    <div class="fieldwrap">
+      <div class="actions">
+        <button id="submitBtn" type="button">送信</button>
+        <span id="status" class="status" aria-live="polite"></span>
+      </div>
+    </div>
+  </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const PREFILL = NEO.PREFILL;
+
+  const statusEl = document.getElementById('status');
+  const submitBtn= document.getElementById('submitBtn');
+  const topicSel = document.getElementById('topic');
+  const otherFilesInput = document.getElementById('otherFiles');
+  const fileList = document.getElementById('fileList');
+
+  const rte = document.getElementById('detailHtml');
+  const imagePicker = document.getElementById('imagePicker');
+
+  const dueDateInput = document.getElementById('dueDate');
+
+  const otherFiles = [];
+
+  // ===== モーダル共通制御 =====
+  const showCustomModal = (htmlContent, title = 'ご確認ください') => NEO.showModal(htmlContent, title);
+
+  // ===== URL パラメータ自動入力 =====
+  (function prefillFromServerParams(){
+    try {
+      const z2hNum = (s) => String(s || '')
+        .replace(/[０-９]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0))
+        .replace(/[^\d]/g, '');
+
+      const setValue = (id, val) => {
+        if (val == null || val === '') return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = val;
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+      };
+
+      setValue('person', PREFILL.person);
+      setValue('email',  PREFILL.email);
+      setValue('phone',  PREFILL.phone);
+
+      if (PREFILL.schoolDeptId) {
+        const four = z2hNum(PREFILL.schoolDeptId).slice(0,4);
+        if (four) setValue('schoolDeptId', four);
+      }
+      setValue('schoolDept', PREFILL.schoolDept);
+
+      if (PREFILL.dueDate) setValue('dueDate', String(PREFILL.dueDate).replace(/\//g,'-'));
+    } catch(e){ console.warn('prefill error:', e); }
+  })();
+
+  // ===== UI 補助：問い合わせ、依頼区分の選択時イベント =====
+  if (topicSel) {
+    topicSel.addEventListener('change', () => {
+      const val = topicSel.value;
+
+      // 1. 「データ抽出」選択時
+      if (val.startsWith('データ抽出')) {
+        showCustomModal('データ抽出作業はご依頼の内容によっては処理に時間がかかります。<br>期日に余裕をもってご依頼いただきますよう、ご協力お願いします。');
+      }
+      // 2. 「その他」選択時
+      else if (val.startsWith('その他')) {
+        showCustomModal(NEO.FORMS_ENABLED.dev
+          ? '各機能の仕様変更（画面文言の変更、操作性の変更など）、<br>また機能追加はこの「作業依頼」では承りません。<br>改修についての事前相談の場合も含め、<button type="button" class="link-btn" data-goto-tab="dev">「新規開発・仕様変更」タブ</button>からご依頼ください。'
+          : '各機能の仕様変更（画面文言の変更、操作性の変更など）、<br>また機能追加はこのフォームでは承りません。<br>改修についての事前相談の場合も含め、Chatworkにてご連絡ください。');
+      }
+
+      const topicOtherWrap = document.getElementById('topicOtherWrap');
+      if (topicOtherWrap) {
+        topicOtherWrap.style.display = val.startsWith('その他') ? '' : 'none';
+      }
+    });
+  }
+
+  // ===== 対応希望期日の時間帯・当日チェック =====
+  if (dueDateInput) {
+    dueDateInput.addEventListener('change', () => {
+      const val = dueDateInput.value; // YYYY-MM-DD
+      if (!val) return;
+
+      const now = new Date();
+      const jstFormatter = new Intl.DateTimeFormat('ja-JP', {
+        timeZone: 'Asia/Tokyo',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: 'numeric',
+        hour12: false
+      });
+
+      const parts = jstFormatter.formatToParts(now);
+      const year = parts.find(p => p.type === 'year').value;
+      const month = parts.find(p => p.type === 'month').value;
+      const day = parts.find(p => p.type === 'day').value;
+      const hour = parseInt(parts.find(p => p.type === 'hour').value, 10);
+
+      const todayJstStr = `${year}-${month}-${day}`;
+
+      if (hour >= 19 && val === todayJstStr) {
+        showCustomModal('対応希望期日に本日の日付が指定されていますが、<br>ただ今の時間のご依頼は本日中の対応が難しい可能性があります。<br><br>お急ぎの案件である場合は、その旨を本フォームの「対応希望期日の補足」欄へ入力、もしくは電話等でお急ぎであることをご連絡ください。');
+      }
+    });
+  }
+
+  const flashStatus = NEO.makeFlash(statusEl);
+
+  // ===== RTE：ツールバー =====
+  document.querySelectorAll('.rte-toolbar [data-cmd]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.execCommand(btn.dataset.cmd, false, null);
+      rte.focus();
+    });
+  });
+  document.getElementById('btn-insert-image').addEventListener('click', () => imagePicker.click());
+  imagePicker.addEventListener('change', async () => {
+    const file = imagePicker.files && imagePicker.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      document.execCommand('insertImage', false, reader.result);
+      imagePicker.value = '';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // クリップボードからの画像ペースト
+  rte.addEventListener('paste', (e) => {
+    const items = e.clipboardData && e.clipboardData.items;
+    if (!items) return;
+    for (const it of items) {
+      if (it.type && it.type.startsWith('image/')) {
+        const file = it.getAsFile();
+        const reader = new FileReader();
+        reader.onload = () => document.execCommand('insertImage', false, reader.result);
+        reader.readAsDataURL(file);
+        e.preventDefault();
+        break;
+      }
+    }
+  });
+
+  // ===== 添付ファイル（画像は即拒否） =====
+  otherFilesInput.addEventListener('change', async () => {
+    otherFiles.length = 0; fileList.textContent = '';
+
+    const files = Array.from(otherFilesInput.files || []);
+    const hasImage = files.some(f => (f.type || '').startsWith('image/'));
+    if (hasImage) {
+      otherFilesInput.value = '';
+      flashStatus('「添付ファイル」に画像は指定できません。画像は本文欄に直接貼り付けてください。', 'err');
+      return;
+    }
+
+    const tasks = files.map(f => NEO.readAsDataURL(f).then(dataUrl => {
+      otherFiles.push({ name:f.name, dataUrl, size:f.size, mime:f.type });
+    }));
+    try {
+      await Promise.all(tasks);
+      fileList.textContent = files.map(f => `${f.name} (${Math.round(f.size/1024)}KB)`).join(' / ');
+    } catch {
+      flashStatus('ファイル読込に失敗しました。', 'err');
+    }
+  });
+
+  // ===== 送信 =====
+  submitBtn.addEventListener('click', async () => {
+    try {
+      if (submitBtn.getAttribute('aria-busy') === 'true') return;
+
+      const email = document.getElementById('email').value.trim();
+      const schoolDept = document.getElementById('schoolDept').value.trim();
+      const schoolDeptId = document.getElementById('schoolDeptId').value.trim();
+      const person = document.getElementById('person').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const topic = document.getElementById('topic').value;
+      const dueDate = document.getElementById('dueDate')?.value || '';
+      const dueDateNote = document.getElementById('dueDateNote')?.value.trim() || '';
+
+      const detailHtml = rte.innerHTML.trim();
+      const detailPlain = rte.innerText.trim();
+
+      if (!email || !schoolDept || !person || !topic || !detailPlain) {
+        flashStatus('未入力/形式不正の項目があります。', 'err');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.setAttribute('aria-busy', 'true');
+      flashStatus('送信中…');
+
+      const payload = {
+        fields: {
+          email, schoolDept, schoolDeptId, person, phone, topic,
+          topicOther: (document.getElementById('topicOther')?.value || '').trim(),
+          detail: detailPlain,
+          detailHtml: detailHtml || '',
+          dueDate, dueDateNote
+        },
+        files: otherFiles
+      };
+
+      google.script.run
+        .withSuccessHandler(res => {
+          submitBtn.disabled = false;
+          submitBtn.removeAttribute('aria-busy');
+
+          if (res && res.ok) {
+            flashStatus('送信しました。ありがとうございました！', 'ok');
+            otherFilesInput.value=''; fileList.textContent='';
+            otherFiles.length = 0;
+            rte.innerHTML = '';
+          } else {
+            flashStatus('エラー: ' + (res && res.error || 'unknown'), 'err');
+          }
+        })
+        .withFailureHandler(err => {
+          submitBtn.disabled = false;
+          submitBtn.removeAttribute('aria-busy');
+          flashStatus('エラー: ' + (err && (err.message||err.toString()) || 'unknown'), 'err');
+        })
+        .submit(payload);
+
+    } catch (e) {
+      submitBtn.disabled = false;
+      submitBtn.removeAttribute('aria-busy');
+      flashStatus('エラー: ' + (e && e.message || e), 'err');
+    }
+  });
+});
+</script>

@@ -1,0 +1,118 @@
+<!-- ===== 新規開発・仕様変更依頼 ===== -->
+  <div class="tab-lead">
+    <b>新規開発・仕様変更</b>：新しい機能の追加、画面・文言・動作の変更のご依頼はこちら。<br>
+    例）体験レッスン・資料請求ページの文言や入力項目の変更／MyRoom・うさぎclubのバナー・ポップアップ表示・取下／文言変更・PDF差し替え など
+  </div>
+
+  <div class="form-row2">
+    <label class="req" for="dev_person">ご担当者様氏名</label>
+    <div class="fieldwrap"><input type="text" id="dev_person" data-sync="person" required></div>
+  </div>
+
+  <div class="form-row2">
+    <label class="req" for="dev_email">Email</label>
+    <div class="fieldwrap">
+      <input type="email" id="dev_email" data-sync="email" placeholder="your@example.com" required autocomplete="email">
+      <div class="help">受付の控えをこのアドレスへお送りします。</div>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label class="req" for="dev_dept">部署</label>
+    <div class="fieldwrap flex">
+      <select id="dev_dept" required style="max-width:16em;">
+        <option value="" selected disabled>選択してください</option>
+        <option>企画</option>
+        <option>英企画</option>
+        <option>お茶の間</option>
+        <option>コンテンツ</option>
+        <option>セブ</option>
+        <option>タイ</option>
+        <option>TS</option>
+        <option value="__other">その他</option>
+      </select>
+      <input type="text" id="dev_deptOther" class="flex-1" placeholder="部署名を入力してください" style="display:none;">
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label class="req" for="dev_detail">詳細</label>
+    <div class="fieldwrap">
+      <textarea id="dev_detail" placeholder="ご依頼内容をできるだけ具体的にご記入ください。&#10;例）対象の画面・ページ、変更前と変更後の内容、反映希望日、背景・目的 など"></textarea>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label for="dev_files">資料<br>※1ファイル最大15MB</label>
+    <div class="fieldwrap">
+      <input type="file" id="dev_files" multiple>
+      <div class="help">画像・PDF・Word・Excel など。アップロードしたファイルのリンクが管理表に自動で記載されます。</div>
+      <div id="dev_fileList" class="help file-list"></div>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label for="dev_links">15MBを超える資料のリンク</label>
+    <div class="fieldwrap">
+      <textarea id="dev_links" class="links" placeholder="Google Drive などに置いた資料のURL（複数ある場合は改行で区切ってください）"></textarea>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <label></label>
+    <div class="fieldwrap">
+      <div class="actions">
+        <button id="dev_submitBtn" class="submit-btn" type="button">送信</button>
+        <span id="dev_status" class="status" aria-live="polite"></span>
+      </div>
+    </div>
+  </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const $ = (id) => document.getElementById(id);
+  const flash = NEO.makeFlash($('dev_status'));
+  const files = [];
+
+  // 部署「その他」は自由入力
+  $('dev_dept').addEventListener('change', () => {
+    const other = $('dev_dept').value === '__other';
+    $('dev_deptOther').style.display = other ? '' : 'none';
+    if (other) $('dev_deptOther').focus();
+  });
+
+  NEO.bindFilePicker($('dev_files'), $('dev_fileList'), files, flash);
+
+  $('dev_submitBtn').addEventListener('click', () => {
+    const btn = $('dev_submitBtn');
+    if (btn.getAttribute('aria-busy') === 'true') return;
+
+    const deptSel = $('dev_dept').value;
+    const fields = {
+      person: $('dev_person').value.trim(),
+      email: $('dev_email').value.trim(),
+      dept: deptSel === '__other' ? $('dev_deptOther').value.trim() : deptSel,
+      detail: $('dev_detail').value.trim(),
+      extraLinks: $('dev_links').value.trim()
+    };
+    if (!fields.person || !fields.email || !fields.dept || !fields.detail) {
+      flash('未入力の必須項目があります。', 'err');
+      return;
+    }
+    if (!$('dev_email').checkValidity()) {
+      flash('メールアドレスの形式が正しくありません。', 'err');
+      return;
+    }
+
+    NEO.callServer('submitDev', { fields, files }, btn, flash, (res) => {
+      NEO.showModal(
+        `受付番号 <b>${res.id}</b> で受け付けました。<br>控えメールを ${fields.email.replace(/</g,'&lt;')} へお送りします。`,
+        '送信しました', true);
+      $('dev_detail').value = '';
+      $('dev_links').value = '';
+      $('dev_files').value = ''; $('dev_fileList').textContent = '';
+      files.length = 0;
+    });
+  });
+});
+</script>
