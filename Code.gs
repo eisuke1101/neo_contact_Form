@@ -394,7 +394,8 @@ function sendCopy_(to, subject, body) {
 /** GmailApp で送信。MAIL_FROM がエイリアス登録済みなら送信元に使う */
 function sendViaGmail_(to, subject, body) {
   const opts = {};
-  if (MAIL_FROM) {
+  // 実行アカウント自体が MAIL_FROM なら指定不要
+  if (MAIL_FROM && !isRunningAs_(MAIL_FROM)) {
     if (hasMailAlias_(MAIL_FROM)) {
       opts.from = MAIL_FROM;
     } else {
@@ -411,6 +412,11 @@ function sendViaMailApp_(to, subject, body) {
   MailApp.sendEmail(to, subject, body, opts);
 }
 
+function isRunningAs_(address) {
+  try { return String(Session.getEffectiveUser().getEmail()).toLowerCase() === String(address).toLowerCase(); }
+  catch (_) { return false; }
+}
+
 function hasMailAlias_(address) {
   const a = String(address).toLowerCase();
   return GmailApp.getAliases().some(x => String(x).toLowerCase() === a);
@@ -419,7 +425,9 @@ function hasMailAlias_(address) {
 /** 設定確認用：エディタから実行し、ログで送信元エイリアスの登録状況を確認する */
 function checkMailFrom() {
   const aliases = GmailApp.getAliases();
+  console.log('実行アカウント: ' + Session.getEffectiveUser().getEmail());
   console.log('登録済みエイリアス: ' + (aliases.join(', ') || '（なし）'));
+  if (isRunningAs_(MAIL_FROM)) { console.log(`${MAIL_FROM}: 実行アカウント本人のため、そのまま送信元になります`); return; }
   console.log(`${MAIL_FROM}: ` + (hasMailAlias_(MAIL_FROM) ? '登録済み（送信元に使用されます）' : '未登録（Gmail の設定で「他のメールアドレスを追加」が必要です）'));
 }
 
