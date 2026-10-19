@@ -3,7 +3,7 @@
 <head>
 <base target="_top">
 <meta charset="utf-8">
-<title>NEO 問い合わせ・依頼フォーム</title>
+<title>NEO 総合依頼フォーム</title>
 <style>
   header.page-header {
     background: #f0f6ff;
@@ -85,15 +85,33 @@
   .rte-area:focus{ outline: 2px solid #1a73e8; outline-offset: 2px; }
 
   /* ===== タブ ===== */
-  .tabs{ display:flex; gap:6px; max-width:1100px; border-bottom:2px solid #1a73e8; margin:0 0 0; flex-wrap:wrap; }
-  .tab{ background:#f1f3f4; color:#333; border:1px solid #dadce0; border-bottom:none; border-radius:8px 8px 0 0; padding:10px 18px; font-size:15px; font-weight:700; }
+  .tabs{ display:flex; gap:8px; max-width:1100px; border-bottom:3px solid #1a73e8; margin:0; align-items:flex-end; }
+  .tab{ flex:1 1 0; background:#f1f3f4; color:#333; border:1px solid #dadce0; border-bottom:none; border-radius:10px 10px 0 0; padding:14px 16px; font-size:20px; font-weight:700; line-height:1.3; }
   .tab:hover{ background:#e8f0fe; }
   .tab[aria-selected="true"]{ background:#1a73e8; color:#fff; border-color:#1a73e8; }
-  .tab .tab-sub{ display:block; font-size:11px; font-weight:400; opacity:.85; margin-top:2px; }
-  .tab-panel{ max-width:1100px; padding:14px 0 4px; }
+  .tab .tab-sub{ display:block; font-size:14px; font-weight:500; opacity:.9; margin-top:4px; }
+  /* PC等の不具合・マテリアル関連：既存3タブより控えめに */
+  .tab.tab-minor{ flex:0 0 auto; font-size:14px; font-weight:600; padding:8px 12px; color:#555; background:#f8f9fa; }
+  .tab.tab-minor[aria-selected="true"]{ background:#5f6368; color:#fff; border-color:#5f6368; }
+  .tab-panel{ max-width:1100px; padding:16px 0 4px; }
   .tab-panel[hidden]{ display:none; }
-  .tab-lead{ background:#f8fafd; border:1px solid #d2e3fc; border-radius:8px; padding:10px 14px; margin:0 0 14px; font-size:13px; color:#333; line-height:1.6; }
-  .tab-lead b{ color:#1a237e; }
+  .tab-lead{ background:#e8f0fe; border:1px solid #aecbfa; border-left:6px solid #1a73e8; border-radius:8px; padding:14px 18px; margin:0 0 18px; font-size:15px; color:#202124; line-height:1.75; }
+  .tab-lead b{ color:#174ea6; }
+  .tab-lead-title{ font-size:18px; font-weight:700; color:#174ea6; margin-bottom:4px; }
+
+  /* サポート時間 */
+  .support-hours{ max-width:1100px; box-sizing:border-box; background:#fff8e1; border:1px solid #f9c74f; border-left:6px solid #f29900; border-radius:8px; padding:12px 18px; margin:0 0 18px; }
+  .support-hours-main{ display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 18px; }
+  .support-hours-label{ font-size:18px; font-weight:700; color:#7a4100; }
+  .support-hours-time{ font-size:22px; font-weight:700; color:#202124; }
+  .support-hours-note{ font-size:14px; color:#5f3b00; margin-top:4px; }
+
+  /* PC等の不具合・マテリアル関連の連絡先 */
+  .contact-card{ border:1px solid #dadce0; border-radius:10px; padding:18px 20px; max-width:520px; }
+  .contact-card-label{ font-size:14px; color:#5f6368; font-weight:700; margin-bottom:8px; }
+  .contact-card-btn{ display:inline-block; background:#1a73e8; color:#fff; text-decoration:none; font-weight:700; font-size:16px; border-radius:8px; padding:10px 18px; }
+  .contact-card-btn:hover{ background:#1669c1; }
+  .contact-card-tel{ font-size:28px; font-weight:700; color:#202124; text-decoration:none; letter-spacing:.02em; }
   .link-btn{ background:none; color:#1a73e8; padding:0; border:none; font-weight:700; text-decoration:underline; cursor:pointer; font-size:inherit; font-family:inherit; }
 
   /* ===== 開発依頼／不具合報告 ===== */
@@ -114,8 +132,12 @@
     .form-row2{ grid-template-columns:minmax(0,1fr); }
     .manual-link { font-size: 14px; padding: 6px 10px; }
     #submitBtn, .submit-btn { min-width: 0; width:100%; }
-    .tab{ flex:1; padding:8px 10px; font-size:14px; }
-    .tab .tab-sub{ display:none; }
+    /* スマホ：主要3タブは縦に並べ、PC等・マテリアルは下段に小さく横並び */
+    .tabs{ flex-wrap:wrap; gap:6px; padding-bottom:6px; }
+    .tab{ flex:1 1 100%; padding:10px 14px; font-size:17px; border-radius:8px; border-bottom:1px solid #dadce0; text-align:left; }
+    .tab .tab-sub{ display:inline; font-size:13px; margin:0 0 0 8px; }
+    .tab.tab-minor{ flex:1 1 40%; text-align:center; }
+    .support-hours-time{ font-size:18px; }
     .info-block pre{ white-space:pre-wrap; }
   }
 
@@ -289,7 +311,7 @@ window.NEO = (function(){
 </head>
 <body>
   <header class="page-header">
-    <h1>NEO 問い合わせ・依頼フォーム</h1>
+    <h1>NEO 総合依頼フォーム</h1>
     <a class="manual-link"
        href="https://docs.google.com/document/d/1Hbz7wjvYx6gMYgW9pXaWLosgoImV8bvK/"
        target="_blank" rel="noopener">
@@ -297,12 +319,13 @@ window.NEO = (function(){
     </a>
   </header>
 
-  <div class="desc">
-    <b>
-    ■サポート時間は平日10:00～22:00、土日祝9:30～18:30です。時間外でも対応が必要な場合、お急ぎの案件などの場合はその旨ご連絡ください。<br>
-    ■パソコン不具合に関するお問い合わせは、PC不具合フォームよりお願い致します。⇒ <a href="https://docs.google.com/forms/d/e/1FAIpQLSfj8-RN-yzCZ3NfWHkCkDVx-Xioe5OmIWp0XEGgbyENlnOsPg/viewform" target="_blank" rel="noopener">PC不具合フォーム</a><br>
-    ■マテリアルに関するお問い合わせは、テクニカルサポート 050-5577-2984 へご連絡ください。<br>
-    </b>
+  <div class="support-hours" role="note">
+    <div class="support-hours-main">
+      <span class="support-hours-label">サポート時間</span>
+      <span class="support-hours-time">平日 10:00～22:00</span>
+      <span class="support-hours-time">土日祝 9:30～18:30</span>
+    </div>
+    <div class="support-hours-note">時間外でも対応が必要な場合、お急ぎの案件などの場合は、その旨をご連絡ください。</div>
   </div>
 
   <div class="tabs" role="tablist" aria-label="受付の種類">
@@ -314,6 +337,12 @@ window.NEO = (function(){
     </button>
     <button type="button" class="tab" role="tab" data-type="dev" aria-controls="panel-dev">
       新規開発・仕様変更<span class="tab-sub">機能追加・画面や文言の変更</span>
+    </button>
+    <button type="button" class="tab tab-minor" role="tab" data-type="pc" aria-controls="panel-pc">
+      PC等の不具合
+    </button>
+    <button type="button" class="tab tab-minor" role="tab" data-type="material" aria-controls="panel-material">
+      マテリアル関連
     </button>
   </div>
 
@@ -327,6 +356,30 @@ window.NEO = (function(){
 
   <section id="panel-dev" class="tab-panel" role="tabpanel" hidden>
     <?!= include('form_dev') ?>
+  </section>
+
+  <section id="panel-pc" class="tab-panel" role="tabpanel" hidden>
+    <div class="tab-lead">
+      <div class="tab-lead-title">PC等の不具合</div>
+      パソコン・プリンター・ネットワークなど、<b>機器</b>の不具合に関するお問い合わせは、PC不具合フォームからお願いします。<br>
+      NEO などシステムのエラーや動作の異常は <button type="button" class="link-btn" data-goto-tab="bug">不具合報告</button> タブからご報告ください。
+    </div>
+    <div class="contact-card">
+      <div class="contact-card-label">お問い合わせ先</div>
+      <a class="contact-card-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfj8-RN-yzCZ3NfWHkCkDVx-Xioe5OmIWp0XEGgbyENlnOsPg/viewform" target="_blank" rel="noopener">PC不具合フォームを開く</a>
+      <div class="help">別のタブ（ウィンドウ）で開きます。</div>
+    </div>
+  </section>
+
+  <section id="panel-material" class="tab-panel" role="tabpanel" hidden>
+    <div class="tab-lead">
+      <div class="tab-lead-title">マテリアル関連</div>
+      マテリアルに関するお問い合わせは、テクニカルサポートへお電話でご連絡ください。
+    </div>
+    <div class="contact-card">
+      <div class="contact-card-label">テクニカルサポート</div>
+      <a class="contact-card-tel" href="tel:050-5577-2984">050-5577-2984</a>
+    </div>
   </section>
 
   <!-- カスタム警告モーダル -->

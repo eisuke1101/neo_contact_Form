@@ -80,11 +80,11 @@ function doGet(e) {
     }
   }
 
-  // 通常フォーム画面（?type=work|dev|bug で初期タブを指定）
+  // 通常フォーム画面（?type=work|bug|dev|pc|material で初期タブを指定）
   const t = HtmlService.createTemplateFromFile('index');
   t.params = (e && e.parameter) ? e.parameter : {};
   return t.evaluate()
-    .setTitle('NEO 問い合わせ・依頼フォーム')
+    .setTitle('NEO 総合依頼フォーム')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
