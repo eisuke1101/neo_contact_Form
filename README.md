@@ -1,6 +1,8 @@
 # NEO 総合依頼フォーム
 
 1つのURLで「作業依頼」「不具合報告」「新規開発・仕様変更」の3種類を受け付けるフォーム。画面上部のタブで切り替える。
+公開URL：https://script.google.com/macros/s/AKfycbyNacPk9zU8GVcuscaF7Y47QM7vjHUJfr5GzSRAHNOtoleH5sEY9zq-O_2B935uMx1a/exec
+
 ほかに「PC等の不具合」「マテリアル関連」の小さいタブがあり、PC不具合フォームへのリンクとテクニカルサポートの電話番号を表示する（受付はしない）。
 
 - 初期表示のタブは URL の `?type=work`（既定）/ `bug` / `dev` / `pc` / `material` で指定できる
