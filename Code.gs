@@ -40,7 +40,9 @@ const MAKE_FILE_PUBLIC = true;
 // 回答者へ控えメールを送るかどうか
 const SEND_COPY_TO_RESPONDENT = true;
 
-// メール送信メソッド: "auto" | "gmail" | "mail"
+// メール送信メソッド: "auto"（MailApp→失敗時 GmailApp）| "gmail" | "mail"
+// ※ MailApp は Google アカウントのメールアドレス（neo_s@nova.co.jp）から、
+//    GmailApp は Gmail のアドレス（nh.neo.support@gmail.com）から送信される
 const COPY_MAIL_METHOD = 'auto';
 
 // 控えメールの送信元アドレス。
@@ -380,12 +382,13 @@ function sendCopy_(to, subject, body) {
   if (method === 'gmail') { sendViaGmail_(to, subject, body); return; }
   if (method === 'mail')  { sendViaMailApp_(to, subject, body); return; }
 
+  // 管理用スプレッドシートと同じく MailApp を優先（送信元が neo_s@nova.co.jp になる）
   try {
-    sendViaGmail_(to, subject, body);
+    sendViaMailApp_(to, subject, body);
   } catch (e1) {
-    try { sendViaMailApp_(to, subject, body); }
+    try { sendViaGmail_(to, subject, body); }
     catch (e2) {
-      throw new Error('控えメール送信に失敗しました（GmailApp/MailApp いずれも不可）: '
+      throw new Error('控えメール送信に失敗しました（MailApp/GmailApp いずれも不可）: '
         + (e1 && e1.message ? e1.message : e1) + ' / ' + (e2 && e2.message ? e2.message : e2));
     }
   }
@@ -406,7 +409,7 @@ function sendViaGmail_(to, subject, body) {
   GmailApp.sendEmail(to, subject, body, opts);
 }
 
-/** MailApp で送信（送信元は変更できないため、返信先のみ MAIL_FROM にする） */
+/** MailApp で送信（送信元は実行アカウントのメールアドレス。返信先は MAIL_FROM） */
 function sendViaMailApp_(to, subject, body) {
   const opts = MAIL_FROM ? { replyTo: MAIL_FROM } : {};
   MailApp.sendEmail(to, subject, body, opts);
@@ -425,7 +428,7 @@ function hasMailAlias_(address) {
 /** 設定確認用：エディタから実行し、ログで送信元エイリアスの登録状況を確認する */
 function checkMailFrom() {
   const aliases = GmailApp.getAliases();
-  console.log('実行アカウント: ' + Session.getEffectiveUser().getEmail());
+  console.log('実行アカウント（MailApp の送信元）: ' + Session.getEffectiveUser().getEmail());
   console.log('登録済みエイリアス: ' + (aliases.join(', ') || '（なし）'));
   if (isRunningAs_(MAIL_FROM)) { console.log(`${MAIL_FROM}: 実行アカウント本人のため、そのまま送信元になります`); return; }
   console.log(`${MAIL_FROM}: ` + (hasMailAlias_(MAIL_FROM) ? '登録済み（送信元に使用されます）' : '未登録（Gmail の設定で「他のメールアドレスを追加」が必要です）'));
