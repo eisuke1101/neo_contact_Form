@@ -40,9 +40,11 @@ const MAKE_FILE_PUBLIC = true;
 // 回答者へ控えメールを送るかどうか
 const SEND_COPY_TO_RESPONDENT = true;
 
-// メール送信メソッド: "auto"（MailApp→失敗時 GmailApp）| "gmail" | "mail"
-// ※ MailApp は Google アカウントのメールアドレス（neo_s@nova.co.jp）から、
-//    GmailApp は Gmail のアドレス（nh.neo.support@gmail.com）から送信される
+// メール送信メソッド: "auto" | "gmail" | "mail"
+//   auto：送信元を MAIL_FROM にできる方法を自動で選ぶ
+//     ・実行アカウント自体が MAIL_FROM → MailApp
+//     ・MAIL_FROM が Gmail の送信元エイリアスに登録済み → GmailApp（from 指定）
+//     ・どちらでもない → MailApp（送信元は実行アカウント、返信先を MAIL_FROM に設定）
 const COPY_MAIL_METHOD = 'auto';
 
 // 控えメールの送信元アドレス。
@@ -382,11 +384,13 @@ function sendCopy_(to, subject, body) {
   if (method === 'gmail') { sendViaGmail_(to, subject, body); return; }
   if (method === 'mail')  { sendViaMailApp_(to, subject, body); return; }
 
-  // 管理用スプレッドシートと同じく MailApp を優先（送信元が neo_s@nova.co.jp になる）
+  const useGmailAlias = MAIL_FROM && !isRunningAs_(MAIL_FROM) && hasMailAlias_(MAIL_FROM);
+  const first  = useGmailAlias ? sendViaGmail_   : sendViaMailApp_;
+  const second = useGmailAlias ? sendViaMailApp_ : sendViaGmail_;
   try {
-    sendViaMailApp_(to, subject, body);
+    first(to, subject, body);
   } catch (e1) {
-    try { sendViaGmail_(to, subject, body); }
+    try { second(to, subject, body); }
     catch (e2) {
       throw new Error('控えメール送信に失敗しました（MailApp/GmailApp いずれも不可）: '
         + (e1 && e1.message ? e1.message : e1) + ' / ' + (e2 && e2.message ? e2.message : e2));
