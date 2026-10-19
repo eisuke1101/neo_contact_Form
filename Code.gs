@@ -43,6 +43,10 @@ const SEND_COPY_TO_RESPONDENT = true;
 // メール送信メソッド: "auto" | "gmail" | "mail"
 const COPY_MAIL_METHOD = 'auto';
 
+// 控えメールの送信元アドレス。
+// Gmail の「名前（送信元）」に登録済みのエイリアスである必要がある（未登録時は返信先にのみ設定）
+const MAIL_FROM = 'neo_s@nova.co.jp';
+
 // 添付ファイル上限（1ファイルあたり）
 const MAX_FILE_BYTES = 15 * 1024 * 1024;
 
@@ -369,22 +373,54 @@ function todayJst_() {
   return new Date(y, m - 1, d);
 }
 
-/** 回答者への控えメール送信 */
+/** 回答者への控えメール送信（送信元は MAIL_FROM） */
 function sendCopy_(to, subject, body) {
   var method = (COPY_MAIL_METHOD || 'auto').toLowerCase();
 
-  if (method === 'gmail') { GmailApp.sendEmail(to, subject, body); return; }
-  if (method === 'mail')  { MailApp.sendEmail(to, subject, body);  return; }
+  if (method === 'gmail') { sendViaGmail_(to, subject, body); return; }
+  if (method === 'mail')  { sendViaMailApp_(to, subject, body); return; }
 
   try {
-    GmailApp.sendEmail(to, subject, body);
+    sendViaGmail_(to, subject, body);
   } catch (e1) {
-    try { MailApp.sendEmail(to, subject, body); }
+    try { sendViaMailApp_(to, subject, body); }
     catch (e2) {
       throw new Error('控えメール送信に失敗しました（GmailApp/MailApp いずれも不可）: '
         + (e1 && e1.message ? e1.message : e1) + ' / ' + (e2 && e2.message ? e2.message : e2));
     }
   }
+}
+
+/** GmailApp で送信。MAIL_FROM がエイリアス登録済みなら送信元に使う */
+function sendViaGmail_(to, subject, body) {
+  const opts = {};
+  if (MAIL_FROM) {
+    if (hasMailAlias_(MAIL_FROM)) {
+      opts.from = MAIL_FROM;
+    } else {
+      console.warn(`送信元 ${MAIL_FROM} が Gmail のエイリアスに未登録のため、返信先のみ設定して送信します。`);
+      opts.replyTo = MAIL_FROM;
+    }
+  }
+  GmailApp.sendEmail(to, subject, body, opts);
+}
+
+/** MailApp で送信（送信元は変更できないため、返信先のみ MAIL_FROM にする） */
+function sendViaMailApp_(to, subject, body) {
+  const opts = MAIL_FROM ? { replyTo: MAIL_FROM } : {};
+  MailApp.sendEmail(to, subject, body, opts);
+}
+
+function hasMailAlias_(address) {
+  const a = String(address).toLowerCase();
+  return GmailApp.getAliases().some(x => String(x).toLowerCase() === a);
+}
+
+/** 設定確認用：エディタから実行し、ログで送信元エイリアスの登録状況を確認する */
+function checkMailFrom() {
+  const aliases = GmailApp.getAliases();
+  console.log('登録済みエイリアス: ' + (aliases.join(', ') || '（なし）'));
+  console.log(`${MAIL_FROM}: ` + (hasMailAlias_(MAIL_FROM) ? '登録済み（送信元に使用されます）' : '未登録（Gmail の設定で「他のメールアドレスを追加」が必要です）'));
 }
 
 function safe_(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
