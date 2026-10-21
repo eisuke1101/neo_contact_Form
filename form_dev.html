@@ -5,6 +5,34 @@
     例）体験レッスン・資料請求ページの文言や入力項目の変更／MyRoom・うさぎclubのバナー・ポップアップ表示・取下／文言変更・PDF差し替え など
   </div>
 
+  <!-- STEP 1：Chatwork グループの有無を確認 -->
+  <div class="step-card" id="dev_step1">
+    <div class="step-title"><span class="step-no">STEP 1</span>ご依頼の案件・機能について、Chatworkグループはありますか？</div>
+    <p class="step-desc">
+      重要な案件や大規模な案件は、案件ごとのChatworkグループでご依頼・ご相談を受け付けています。<br>
+      下の一覧に該当する案件・機能がある場合は、このフォームではなく<b>Chatworkグループからご依頼ください</b>。
+    </p>
+    <input type="search" id="dev_cwFilter" class="cw-filter" placeholder="案件名・機能名・キーワードで絞り込み" aria-label="Chatworkグループの絞り込み">
+    <div id="dev_cwList" class="cw-list" aria-live="polite"><div class="cw-empty">一覧を読み込んでいます…</div></div>
+
+    <div class="choice-list cw-choice" role="radiogroup" aria-label="Chatworkグループの有無">
+      <label><input type="radio" name="dev_cwChoice" value="exists">
+        <span>上の一覧に該当するChatworkグループがある</span></label>
+      <label><input type="radio" name="dev_cwChoice" value="none">
+        <span>該当するChatworkグループはない<span class="choice-note">このフォームでご依頼いただけます（STEP 2 へ進みます）</span></span></label>
+    </div>
+
+    <div id="dev_cwGuide" class="cw-guide" hidden>
+      <b>該当するChatworkグループからご依頼ください。</b><br>
+      一覧の「グループを開く」から、Chatworkグループに参加・移動できます。まだ参加していない場合は、参加申請の承認後にご依頼ください。<br>
+      このフォームからの送信は不要です。
+    </div>
+  </div>
+
+  <!-- STEP 2：依頼内容の入力（STEP 1 で「ない」を選んだ場合のみ表示） -->
+  <div id="dev_step2" hidden>
+  <div class="step-title step2-title"><span class="step-no">STEP 2</span>依頼内容を入力してください</div>
+
   <div class="form-row2">
     <label class="req" for="dev_person">ご担当者様氏名</label>
     <div class="fieldwrap"><input type="text" id="dev_person" data-sync="person" required></div>
@@ -69,6 +97,8 @@
     </div>
   </div>
 
+  </div><!-- /dev_step2 -->
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const $ = (id) => document.getElementById(id);
@@ -83,6 +113,40 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   NEO.bindFilePicker($('dev_files'), $('dev_fileList'), files, flash);
+
+  // ===== STEP 1：Chatwork グループ一覧 =====
+  let cwGroups = [];
+  const esc = (v) => String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function renderGroups() {
+    const box = $('dev_cwList');
+    const q = $('dev_cwFilter').value.trim().toLowerCase();
+    const list = q ? cwGroups.filter(g => (g.name + ' ' + g.desc).toLowerCase().includes(q)) : cwGroups;
+    if (!cwGroups.length) { box.innerHTML = '<div class="cw-empty">現在、登録されているChatworkグループはありません。</div>'; return; }
+    if (!list.length)     { box.innerHTML = '<div class="cw-empty">「' + esc(q) + '」に該当するグループはありません。</div>'; return; }
+    box.innerHTML = '<table class="cw-table"><thead><tr><th>案件・機能</th><th>内容</th><th></th></tr></thead><tbody>'
+      + list.map(g => '<tr><td class="cw-name">' + esc(g.name) + '</td><td>' + esc(g.desc) + '</td>'
+        + '<td class="cw-link"><a href="' + esc(g.url) + '" target="_blank" rel="noopener">グループを開く</a></td></tr>').join('')
+      + '</tbody></table>';
+  }
+
+  $('dev_cwFilter').addEventListener('input', renderGroups);
+
+  google.script.run
+    .withSuccessHandler(res => {
+      if (res && res.ok) { cwGroups = res.groups || []; renderGroups(); }
+      else $('dev_cwList').innerHTML = '<div class="cw-empty cw-error">一覧を表示できませんでした。該当するグループがあるかご不明な場合は、システム課へお問い合わせください。</div>';
+    })
+    .withFailureHandler(() => {
+      $('dev_cwList').innerHTML = '<div class="cw-empty cw-error">一覧を表示できませんでした。該当するグループがあるかご不明な場合は、システム課へお問い合わせください。</div>';
+    })
+    .getChatworkGroups();
+
+  document.querySelectorAll('input[name="dev_cwChoice"]').forEach(r => r.addEventListener('change', () => {
+    const v = (document.querySelector('input[name="dev_cwChoice"]:checked') || {}).value;
+    $('dev_cwGuide').hidden = v !== 'exists';
+    $('dev_step2').hidden = v !== 'none';
+  }));
 
   $('dev_submitBtn').addEventListener('click', () => {
     const btn = $('dev_submitBtn');

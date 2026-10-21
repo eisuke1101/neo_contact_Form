@@ -101,3 +101,38 @@ ${fields.materials || '（なし）'}
     job.mailSent = true;
   }
 }
+
+
+/**
+ * 開設済み Chatwork グループの一覧を返す（google.script.run から呼ばれる）
+ * 表示にチェックがあり、案件名と招待リンク（https://www.chatwork.com/…）がある行だけを返す。
+ */
+function getChatworkGroups() {
+  try {
+    const cache = CacheService.getScriptCache();
+    const cacheKey = 'DEV_CW_GROUPS';
+    if (DEV_CW_CACHE_SECONDS > 0) {
+      const hit = cache.get(cacheKey);
+      if (hit) return { ok: true, groups: JSON.parse(hit) };
+    }
+
+    const ws = getSheet_(DEV_SPREADSHEET_ID, DEV_CW_SHEET_NAME);
+    const last = ws.getLastRow();
+    const groups = [];
+    if (last >= 2) {
+      for (const [show, name, desc, url] of ws.getRange(2, 1, last - 1, 4).getValues()) {
+        const n = String(name || '').trim();
+        const u = String(url || '').trim();
+        if (show !== true || !n || !/^https:\/\/(www\.)?chatwork\.com\//i.test(u)) continue;
+        groups.push({ name: n, desc: String(desc || '').trim(), url: u });
+      }
+    }
+
+    if (DEV_CW_CACHE_SECONDS > 0) {
+      try { cache.put(cacheKey, JSON.stringify(groups), DEV_CW_CACHE_SECONDS); } catch (_) {}
+    }
+    return { ok: true, groups };
+  } catch (e) {
+    return { ok: false, error: (e && e.message) || String(e) };
+  }
+}

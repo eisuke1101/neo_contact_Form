@@ -19,6 +19,10 @@ const DEV_SPREADSHEET_ID   = '1XKe47vEB_e351nmqOZsVwzfGg6TDzOOhPPdPuqs7cNc';
 const DEV_SHEET_NAME       = '小規模案件';
 const DEV_DRIVE_FOLDER_ID  = '1mgH317-UZ1JBcxyOt_spx84VhbSJm1Ye'; // 資料アップ先（F列見出しのフォルダ）
 const AUTO_FOLDER_DEV_NAME = 'NEO-開発依頼-資料';
+// 開設済み Chatwork グループの一覧（新規開発・仕様変更タブの STEP 1 に表示）
+//   A: 表示（チェックボックス） / B: 案件・機能名 / C: 内容・キーワード / D: グループ招待リンク / E: 備考（画面には出さない）
+const DEV_CW_SHEET_NAME    = 'Chatworkグループ一覧';
+const DEV_CW_CACHE_SECONDS = 600; // 一覧を一時保存する秒数（0 で毎回シートを読む）
 
 // ---- 不具合報告 ----
 const BUG_SPREADSHEET_ID   = '1odxPfKhfA3T48dEgPHv1F7j4AdpWxSU4l6J-Yqb-pOU';
