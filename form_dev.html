@@ -132,14 +132,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $('dev_cwFilter').addEventListener('input', renderGroups);
 
+  function showCwError(detail) {
+    $('dev_cwList').innerHTML = '<div class="cw-empty cw-error">一覧を表示できませんでした。該当するグループがあるかご不明な場合は、システム課へお問い合わせください。'
+      + (detail ? '<br><small>（' + esc(detail) + '）</small>' : '') + '</div>';
+  }
+
   google.script.run
     .withSuccessHandler(res => {
       if (res && res.ok) { cwGroups = res.groups || []; renderGroups(); }
-      else $('dev_cwList').innerHTML = '<div class="cw-empty cw-error">一覧を表示できませんでした。該当するグループがあるかご不明な場合は、システム課へお問い合わせください。</div>';
+      else showCwError(res && res.error);
     })
-    .withFailureHandler(() => {
-      $('dev_cwList').innerHTML = '<div class="cw-empty cw-error">一覧を表示できませんでした。該当するグループがあるかご不明な場合は、システム課へお問い合わせください。</div>';
-    })
+    .withFailureHandler(err => showCwError(err && (err.message || String(err))))
     .getChatworkGroups();
 
   document.querySelectorAll('input[name="dev_cwChoice"]').forEach(r => r.addEventListener('change', () => {

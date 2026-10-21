@@ -108,6 +108,17 @@ ${fields.materials || '（なし）'}
  * 表示にチェックがあり、案件名と招待リンク（https://www.chatwork.com/…）がある行だけを返す。
  */
 function getChatworkGroups() {
+  return loadChatworkGroups_();
+}
+
+/** 一時保存した一覧を消す（シートの変更をすぐ反映したいときにエディタから実行） */
+function clearChatworkGroupsCache() {
+  CacheService.getScriptCache().remove('DEV_CW_GROUPS');
+  const r = loadChatworkGroups_();
+  console.log(r.ok ? `一時保存を消しました。現在の表示件数：${r.groups.length}件` : 'シートの読み込みに失敗しました：' + r.error);
+}
+
+function loadChatworkGroups_() {
   try {
     const cache = CacheService.getScriptCache();
     const cacheKey = 'DEV_CW_GROUPS';
@@ -128,7 +139,8 @@ function getChatworkGroups() {
       }
     }
 
-    if (DEV_CW_CACHE_SECONDS > 0) {
+    // 0件は一時保存しない（シートへの登録前に開かれた空の一覧が残り続けるのを防ぐ）
+    if (DEV_CW_CACHE_SECONDS > 0 && groups.length) {
       try { cache.put(cacheKey, JSON.stringify(groups), DEV_CW_CACHE_SECONDS); } catch (_) {}
     }
     return { ok: true, groups };
