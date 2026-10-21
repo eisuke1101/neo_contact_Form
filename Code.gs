@@ -446,3 +446,24 @@ function safe_(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&
 
 /** 接続テスト */
 function ping() { return 'pong'; }
+
+/**
+ * 権限の承認用：このプロジェクトが使うサービスにひととおりアクセスする。
+ * エディタから実行し、承認画面では「すべて選択」してから許可すること。
+ */
+function authorizeAll() {
+  const checks = [
+    ['スプレッドシート（作業依頼）',   () => SpreadsheetApp.openById(SPREADSHEET_ID).getName()],
+    ['スプレッドシート（開発依頼）',   () => SpreadsheetApp.openById(DEV_SPREADSHEET_ID).getName()],
+    ['スプレッドシート（不具合報告）', () => SpreadsheetApp.openById(BUG_SPREADSHEET_ID).getName()],
+    ['Drive',                       () => DriveApp.getRootFolder().getName()],
+    ['メール送信（MailApp）',         () => MailApp.getRemainingDailyQuota()],
+    ['Gmail',                       () => GmailApp.getAliases().length],
+    ['トリガー',                     () => ScriptApp.getProjectTriggers().length],
+    ['実行アカウント',                () => Session.getEffectiveUser().getEmail()],
+  ];
+  for (const [label, fn] of checks) {
+    try { console.log(`OK  ${label}: ${fn()}`); }
+    catch (e) { console.log(`NG  ${label}: ${e && e.message ? e.message : e}`); }
+  }
+}
