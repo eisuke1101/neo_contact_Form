@@ -452,6 +452,10 @@ function ping() { return 'pong'; }
  * エディタから実行し、承認画面では「すべて選択」してから許可すること。
  */
 function authorizeAll() {
+  // 承認画面で一部の権限しか許可されていない場合、足りない権限の承認画面を出す
+  try { ScriptApp.requireAllScopes(ScriptApp.AuthMode.FULL); }
+  catch (e) { console.log('requireAllScopes: ' + (e && e.message ? e.message : e)); }
+
   const checks = [
     ['スプレッドシート（作業依頼）',   () => SpreadsheetApp.openById(SPREADSHEET_ID).getName()],
     ['スプレッドシート（開発依頼）',   () => SpreadsheetApp.openById(DEV_SPREADSHEET_ID).getName()],
